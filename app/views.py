@@ -1,5 +1,6 @@
 from flask import render_template,flash, redirect
 from flask import request
+from werkzeug.utils import secure_filename
 
 from app import app
 from .forms import LoginForm
@@ -44,3 +45,10 @@ def login2():
 @app.route('/login3/',methods=['GET','POST'])
 def login3():
     return request.args.get('key','')
+
+@app.route('/upload/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        f = request.files['the_file']
+        f.save('/media/sanu/med/upload/' + secure_filename(f.filename))
+    return "Done"
