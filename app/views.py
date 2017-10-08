@@ -1,4 +1,6 @@
 from flask import render_template,flash, redirect
+from flask import request
+
 from app import app
 from .forms import LoginForm
 @app.route('/')
@@ -27,7 +29,12 @@ def login():
         flash('Login requested for OpenID="%s", remember_me=%s' %
               (form.openid.data, str(form.remember_me.data)))
         return redirect('/index')
-    return render_template('login.html', 
+    return render_template('login.html',
                            title='Sign In',
                            form=form,
-			   providers=app.config['OPENID_PROVIDERS'])
+            providers=app.config['OPENID_PROVIDERS'])
+
+@app.route('/login2/<username>/<password>/',methods=['GET','POST'])
+def login2(username,password):
+    if request.method == 'GET':
+        return "Username = %s and Password = %s" % (username,password)
