@@ -34,7 +34,9 @@ def login():
                            form=form,
             providers=app.config['OPENID_PROVIDERS'])
 
-@app.route('/login2/<username>/<password>/',methods=['GET','POST'])
-def login2(username,password):
+@app.route('/login2/',methods=['GET','POST'])
+def login2():
     if request.method == 'GET':
-        return "Username = %s and Password = %s" % (username,password)
+        return render_template('form.html',title="Form Submit")
+    elif request.method == 'POST':
+        return "Username = %s and Password = %s" % (request.form['username'],request.form['password'])
