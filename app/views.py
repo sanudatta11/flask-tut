@@ -40,3 +40,7 @@ def login2():
         return render_template('form.html',title="Form Submit")
     elif request.method == 'POST':
         return "Username = %s and Password = %s" % (request.form['username'],request.form['password'])
+
+@app.route('/login3/',methods=['GET','POST'])
+def login3():
+    return request.args.get('key','')
