@@ -5,7 +5,7 @@ from flask import url_for
 from werkzeug.utils import secure_filename, escape
 from flask_mysqldb import MySQL
 from flask import Flask
-from connect import connect_mysql
+from connect import insert_mysql,get_data
 
 from app import app
 from .forms import LoginForm
@@ -85,7 +85,7 @@ def logout():
 @app.route('/update')
 def update():
     try:
-        retr = connect_mysql()
+        retr = insert_mysql()
         if retr == 1:
             return "Update Done"
         else:
@@ -94,6 +94,11 @@ def update():
         return '''
                 Couldn't Fetch
                 '''
+
+@app.route('/querry')
+def querry():
+    lists = get_data();
+    return render_template("list.html",lists=lists);
 
 # set the secret key.  keep this really secret:
 app.secret_key = str('A0Zr98j/3yX R~XHH!jmN]LWX/,?RT')
