@@ -1,13 +1,28 @@
 from flask import render_template,flash, redirect
 from flask import request
-from werkzeug.utils import secure_filename
+from flask import session
+from flask import url_for
+from werkzeug.utils import secure_filename, escape
+from flask_mysqldb import MySQL
+from flask import Flask
 
 from app import app
 from .forms import LoginForm
+
+app  = Flask(__name__)
+
+import connect
+ 
+
+
 @app.route('/')
 @app.route('/index')
 def index():
-    user = {'nickname': 'Miguel'}  # fake user
+    if 'username' in session:
+        user = {'nickname': escape(session['username']) }
+
+    user = {'nickname': "No user"}
+
     posts = [  # fake array of posts
         { 
             'author': {'nickname': 'John'}, 
@@ -52,3 +67,25 @@ def upload_file():
         f = request.files['the_file']
         f.save('/media/sanu/med/upload/' + secure_filename(f.filename))
     return "Done"
+
+
+# For Session Check
+@app.route('/logsess',methods=['GET','POST'])
+def login4():
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        return redirect(url_for('index'))
+    return '''
+            <form method="post">
+                <p><input type=text name=username>
+                <p><input type=submit value=Login>
+            </form>
+        '''
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
+# set the secret key.  keep this really secret:
+app.secret_key = str('A0Zr98j/3yX R~XHH!jmN]LWX/,?RT')
