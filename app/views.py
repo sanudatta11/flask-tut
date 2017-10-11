@@ -5,15 +5,10 @@ from flask import url_for
 from werkzeug.utils import secure_filename, escape
 from flask_mysqldb import MySQL
 from flask import Flask
+from connect import connect_mysql
 
 from app import app
 from .forms import LoginForm
-
-app  = Flask(__name__)
-
-import connect
- 
-
 
 @app.route('/')
 @app.route('/index')
@@ -86,6 +81,19 @@ def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
     return redirect(url_for('index'))
+
+@app.route('/update')
+def update():
+    try:
+        retr = connect_mysql()
+        if retr == 1:
+            return "Update Done"
+        else:
+            return "Update Failed! Rollbacked"
+    except:
+        return '''
+                Couldn't Fetch
+                '''
 
 # set the secret key.  keep this really secret:
 app.secret_key = str('A0Zr98j/3yX R~XHH!jmN]LWX/,?RT')
